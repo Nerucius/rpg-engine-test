@@ -13,12 +13,12 @@ This a simple RPG Engine skeleton for testing integration with the Tiled map edi
 
 The Engine is divided into components or sub-systems, each being in charge of maintaining a certain aspect of the game:
 
-- *AssetsManager*: In charge of loading game assets.
-- *EntityManager*: Game entities, both playable and non-playable.
-- *FilterManager*: Box2D collision filters.
-- *Renderer*: Maintains a valid SpriteBatch and Viewport.
-- *RoomManager*: Manages game rooms, their interactions and whatnot.
-- *UIManager*: Manages the user interface, and most importantly, dialog trees.
+- **AssetsManager**: In charge of loading game assets.
+- **EntityManager**: Game entities, both playable and non-playable.
+- **FilterManager**: Box2D collision filters.
+- **Renderer**: Maintains a valid SpriteBatch and Viewport.
+- **RoomManager**: Manages game rooms, their interactions and whatnot.
+- **UIManager**: Manages the user interface, and most importantly, dialog trees.
 
 ### Other
 
