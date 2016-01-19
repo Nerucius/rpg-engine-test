@@ -108,7 +108,11 @@ public class Entity {
 	}
 
 	public void setPosition(float x, float y) {
-		body.setTransform(x, y, 0f);
+		body.setTransform(x, y, body.getAngle());
+	}
+
+	public void setPosition(Vector2 v) {
+		this.setPosition(v.x, v.y);
 	}
 
 	public Vector2 getPosition() {

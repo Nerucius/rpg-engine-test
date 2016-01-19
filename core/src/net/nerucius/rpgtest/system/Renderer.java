@@ -43,6 +43,10 @@ public class Renderer implements Disposable{
 		rayHandler = new RayHandler(game.getB2DWorld());
 	}
 
+	public void render(float delta){
+
+	}
+
 	/** Must be called to notify a screen resize. */
 	public void resize(int w, int h) {
 		UIMatrix.setToOrtho2D(0, 0, w, h);

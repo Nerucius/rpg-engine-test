@@ -19,6 +19,17 @@ public class RoomManager implements Disposable {
 		this.game = game;
 	}
 
+	public Room loadRoom(String directory, String tmxPath) {
+		Room newRoom = new Room(game, directory, tmxPath);
+		rooms.add(newRoom);
+
+		return newRoom;
+	}
+
+	public void setActiveRoom(Room room){
+		this.activeRoom = room;
+	}
+
 	@Override
 	public void dispose() {
 		for (Room r : rooms)

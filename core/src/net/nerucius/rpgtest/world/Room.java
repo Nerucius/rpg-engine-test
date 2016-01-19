@@ -29,14 +29,13 @@ import box2dLight.Light;
 import box2dLight.PointLight;
 
 /**
- *
  * @author Akira on 2016-01-06.
  */
 public class Room implements Disposable {
 
 	public Array<Light> lights;
 
-	private String basedir;
+	private String directory;
 	private FileHandle tmxFile;
 
 	private RPGTestGame game;
@@ -73,16 +72,16 @@ public class Room implements Disposable {
 	 * Create a new room from a base directory from where assets will be loaded and a TMX file
 	 * (Multiple rooms can have the same base dir).
 	 *
-	 * @param game    An instance of the Game.
-	 * @param basedir Base directory for asset loading.
-	 * @param tmx     ".tmx" file to use for the room.
+	 * @param game      An instance of the Game.
+	 * @param directory Base directory for asset loading.
+	 * @param tmx       ".tmx" file to use for the room.
 	 */
-	public Room(RPGTestGame game, String basedir, String tmx) {
+	public Room(RPGTestGame game, String directory, String tmx) {
 		this.game = game;
-		this.basedir = basedir;
+		this.directory = directory;
 		this.lights = new Array<Light>(false, 8);
 
-		tmxFile = Gdx.files.internal(basedir + "/" + tmx);
+		tmxFile = Gdx.files.internal(directory + "/" + tmx);
 		if (!tmxFile.exists()) throw new Error("File not found: " + tmxFile.path());
 
 		// Create the room
@@ -293,5 +292,10 @@ public class Room implements Disposable {
 	public void reloadAssets() {
 		this.dispose();
 		this.createRoom();
+	}
+
+	public Vector2 getSpawn() {
+		// TODO load spawn from map
+		return new Vector2(0, 0);
 	}
 }
