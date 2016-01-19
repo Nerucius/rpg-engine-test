@@ -19,8 +19,8 @@ public class RoomManager implements Disposable {
 		this.game = game;
 	}
 
-	public Room loadRoom(String directory, String tmxPath) {
-		Room newRoom = new Room(game, directory, tmxPath);
+	public Room loadRoom(String directory, String tmxFile) {
+		Room newRoom = new Room(game, directory, tmxFile);
 		rooms.add(newRoom);
 
 		return newRoom;
@@ -30,7 +30,15 @@ public class RoomManager implements Disposable {
 		this.activeRoom = room;
 	}
 
-	@Override
+    public Room getActiveRoom() {
+        return activeRoom;
+    }
+
+    public Array<Room> getRooms() {
+        return rooms;
+    }
+
+    @Override
 	public void dispose() {
 		for (Room r : rooms)
 			r.dispose();

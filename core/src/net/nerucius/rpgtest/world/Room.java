@@ -27,6 +27,7 @@ import net.nerucius.rpgtest.system.FilterManager;
 import box2dLight.ConeLight;
 import box2dLight.Light;
 import box2dLight.PointLight;
+import box2dLight.RayHandler;
 
 /**
  * @author Akira on 2016-01-06.
@@ -86,7 +87,6 @@ public class Room implements Disposable {
 
 		// Create the room
 		this.createRoom();
-
 	}
 
 
@@ -95,7 +95,7 @@ public class Room implements Disposable {
 			return;
 
 		if (gameCam == null)
-			gameCam = (OrthographicCamera)game.getRenderer().getViewport().getCamera();
+			gameCam = (OrthographicCamera)game.getRenderManager().getViewport().getCamera();
 
 		tiler.setView(gameCam);
 		tiler.render(layers);
@@ -115,8 +115,8 @@ public class Room implements Disposable {
 		if (tileWidth != tileHeight) throw new Error("Map error: Tiles not square");
 		tileSize = tileWidth;
 
-		// Tilemap Renderer
-		tiler = new OrthogonalTiledMapRenderer(tileMap, 1f / tileSize, game.getRenderer().getBatch());
+		// Tilemap RenderManager
+		tiler = new OrthogonalTiledMapRenderer(tileMap, 1f / tileSize, game.getRenderManager().getBatch());
 
 		this.createPhysics();
 		this.createLights();
@@ -179,6 +179,9 @@ public class Room implements Disposable {
 		 * - Cone
 		 * - Directional
 		 */
+
+        RayHandler gameRH = game.getRenderManager().getRayHandler();
+
 		// Adding a light object
 		MapLayer objLayer = tileMap.getLayers().get("objects");
 
@@ -213,12 +216,12 @@ public class Room implements Disposable {
 			String lightType = obj.getName();
 
 			if (lightType.equalsIgnoreCase("cone")) {
-				ConeLight cl = new ConeLight(game.getRenderer().getRayHandler(), 16, lightColor, distance, ox, oy, angle, degrees);
+				ConeLight cl = new ConeLight(gameRH, 16, lightColor, distance, ox, oy, angle, degrees);
 				lights.add(cl);
 				//Gdx.app.log("Room", "new Light at: " + ox + "," + oy);
 			} else if (lightType.equalsIgnoreCase("point")) {
 				// Point Lights
-				PointLight pl = new PointLight(game.getRenderer().getRayHandler(), 16, lightColor, distance, ox, oy);
+				PointLight pl = new PointLight(gameRH, 16, lightColor, distance, ox, oy);
 				lights.add(pl);
 				//Gdx.app.log("Room", "new Light at: " + ox + "," + oy);
 			} else if (lightType.equalsIgnoreCase("directional")) {

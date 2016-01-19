@@ -32,8 +32,8 @@ public class DesktopInput extends InputAdapter {
 	@Override
 	public boolean keyDown(int keycode) {
 		// Function Keys
-		if (keycode == Input.Keys.F2) game.getRenderer().toggleDebugDraw();
-		if (keycode == Input.Keys.F3) game.getRenderer().toggleLighting();
+		if (keycode == Input.Keys.F2) game.getRenderManager().toggleDebugDraw();
+		if (keycode == Input.Keys.F3) game.getRenderManager().toggleLighting();
 		if (keycode == Input.Keys.F4) {
 			// TODO Enable no-clip
 		}
@@ -89,11 +89,11 @@ public class DesktopInput extends InputAdapter {
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		Vector2 mouse = new Vector2(screenX, screenY);
-		game.getRenderer().getViewport().unproject(mouse);
+		game.getRenderManager().getViewport().unproject(mouse);
 
 		Gdx.app.log("Mouse:", mouse.toString());
 
-		light = new PointLight(game.getRenderer().getRayHandler(), 18, Color.WHITE, 4f, mouse.x, mouse.y);
+		light = new PointLight(game.getRenderManager().getRayHandler(), 18, Color.WHITE, 4f, mouse.x, mouse.y);
 
 		return false;
 	}

@@ -29,8 +29,8 @@ public class Entity {
 	public static final int DOWN = 3;
 
 	private RPGTestGame game;
-	public Body body;
 
+	public Body body;
 	// Interactive fixtures
 	/** Used to calculate collision with this Actor */
 	public Fixture collision;
@@ -38,6 +38,8 @@ public class Entity {
 	public Fixture sensor;
 	/** Used by other actors to interact with this actor TODO Consider using collision. */
 	public Fixture eventFixture;
+
+    private final Vector2 tmp = new Vector2();
 
 	private State state;
 	private Sprite sprite;
@@ -146,7 +148,11 @@ public class Entity {
 	/** Move in a direction. Where direction is an int in range 0-3. */
 	public void move(int direction) {
 		float rad = (direction / 2f) * MathUtils.PI;
-		body.setLinearVelocity(MathUtils.cos(rad) * speed, MathUtils.sin(rad) * speed);
+
+        // Get current velocity, and use it to modify, not set, the new velocity
+        tmp.set(body.getLinearVelocity());
+
+		body.setLinearVelocity(tmp.x + MathUtils.cos(rad) * speed, tmp.y + MathUtils.sin(rad) * speed);
 		body.setTransform(body.getPosition(), rad);
 	}
 

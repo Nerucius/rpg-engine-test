@@ -1,13 +1,14 @@
 package net.nerucius.rpgtest.system;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.utils.Disposable;
 
 /**
  * Created by Akira on 2016-01-06.
  */
-public class AssetsManager {
+public class AssetsManager implements Disposable{
 
-	private static AssetManager manager;
+	private AssetManager manager;
 
 	public AssetsManager() {
 		manager = new AssetManager();
@@ -20,4 +21,9 @@ public class AssetsManager {
 	public void prepResources() {
 
 	}
+
+    @Override
+    public void dispose() {
+        manager.dispose();
+    }
 }

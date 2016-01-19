@@ -12,14 +12,14 @@ import net.nerucius.rpgtest.controller.b2d.PlayerContactListener;
 import net.nerucius.rpgtest.screen.Act1Screen;
 import net.nerucius.rpgtest.system.AssetsManager;
 import net.nerucius.rpgtest.system.EntityManager;
-import net.nerucius.rpgtest.system.Renderer;
+import net.nerucius.rpgtest.system.RenderManager;
 import net.nerucius.rpgtest.system.RoomManager;
 import net.nerucius.rpgtest.system.UIManager;
 
 public class RPGTestGame extends Game {
 
 	// Game subsystems
-	private Renderer renderer;
+	private RenderManager renderManager;
 	private World B2DWorld;
 	private EntityManager entityManager;
 	private RoomManager roomManager;
@@ -41,7 +41,7 @@ public class RPGTestGame extends Game {
 		this.roomManager = new RoomManager(this);
 		this.entityManager = new EntityManager(this);
 		this.uiManager = new UIManager(this);
-		this.renderer = new Renderer(this);
+		this.renderManager = new RenderManager(this);
 
 		// Setup Box2D
 		this.multiContactListener = new MultiContactListener();
@@ -63,7 +63,7 @@ public class RPGTestGame extends Game {
 	@Override
 	public void resize(int w, int h) {
 		super.resize(w, h);
-		this.renderer.resize(w, h);
+		this.renderManager.resize(w, h);
 	}
 
 	@Override
@@ -73,17 +73,17 @@ public class RPGTestGame extends Game {
 		B2DWorld.dispose();
 		entityManager.dispose();
 		roomManager.dispose();
-		renderer.dispose();
+		renderManager.dispose();
 
 		assetsManager.getManager().dispose();
 	}
 
 	// HELPER METHODS
 
-	public Renderer getRenderer() {
-		if (renderer == null)
-			throw new Error("Renderer is null");
-		return renderer;
+	public RenderManager getRenderManager() {
+		if (renderManager == null)
+			throw new Error("RenderManager is null");
+		return renderManager;
 	}
 
 	public EntityManager getEntityManager() {
