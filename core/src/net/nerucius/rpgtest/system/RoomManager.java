@@ -17,6 +17,7 @@ public class RoomManager implements Disposable {
 
 	public RoomManager(RPGTestGame game) {
 		this.game = game;
+        rooms = new Array<Room>(false, 8);
 	}
 
 	public Room loadRoom(String directory, String tmxFile) {

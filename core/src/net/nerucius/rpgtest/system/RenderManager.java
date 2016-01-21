@@ -4,82 +4,134 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import net.nerucius.rpgtest.RPGTestGame;
+import net.nerucius.rpgtest.world.Room;
 
 import box2dLight.RayHandler;
 
 /**
  * Contains all the rendering equipment for the game, and makes sure it stays valid.
  */
-public class RenderManager implements Disposable{
+public class RenderManager implements Disposable {
 
-	private boolean debugDraw = false;
-	private boolean renderLights = true;
+    private RPGTestGame game;
 
-	private OrthographicCamera camera;
-	private ScreenViewport viewport;
-	private Matrix4 UIMatrix;
+    private boolean debugDraw = false;
+    private boolean renderLights = true;
 
-	private SpriteBatch batch;
-	private ShapeRenderer shaper;
-	private RayHandler rayHandler;
+    private OrthographicCamera camera;
+    private ScreenViewport viewport;
+    private Matrix4 UIMatrix;
 
-	/** Construct a new renderer based on a Game instance. */
-	public RenderManager(RPGTestGame game) {
-		UIMatrix = new Matrix4();
+    private SpriteBatch batch;
+    private ShapeRenderer shaper;
+    private Box2DDebugRenderer b2drender;
+    private RayHandler rayHandler;
 
-		camera = new OrthographicCamera();
-		camera.zoom = 1 / 2f;
-		viewport = new ScreenViewport(camera);
-		viewport.setUnitsPerPixel(1 / 16f);
+    private static final int[] BG_LAYERS = {0, 1, 2, 3, 4};
+    private static final int[] FG_LAYERS = {5, 6};
+    private static final int BLACK_LAYER = 7;
 
-		batch = new SpriteBatch();
-		shaper = new ShapeRenderer();
+    // Quick references
+    private RoomManager rm;
+    private EntityManager em;
 
-		rayHandler = new RayHandler(game.getB2DWorld());
-	}
+    /** Construct a new renderer based on a Game instance. */
+    public RenderManager(RPGTestGame game) {
+        this.game = game;
+        UIMatrix = new Matrix4();
 
-	public void render(float delta){
+        camera = new OrthographicCamera();
+        camera.zoom = 1 / 2f;
+        viewport = new ScreenViewport(camera);
+        viewport.setUnitsPerPixel(1 / 16f);
 
-	}
+        batch = new SpriteBatch();
+        shaper = new ShapeRenderer();
+        b2drender = new Box2DDebugRenderer(true, true, true, true, true, true);
 
-	/** Must be called to notify a screen resize. */
-	public void resize(int w, int h) {
-		UIMatrix.setToOrtho2D(0, 0, w, h);
-		viewport.update(w, h, true);
-	}
+        rayHandler = new RayHandler(game.getB2DWorld());
+        rayHandler.setAmbientLight(0.1f);
 
-	public void setDebugDraw(boolean debugDraw) {
-		this.debugDraw = debugDraw;
-	}
+        rm = game.getRoomManager();
+        em = game.getEntityManager();
+    }
 
-	public void toggleDebugDraw() {
-		this.debugDraw = !this.debugDraw;
-	}
+    public void render(float delta) {
+        // Update
+        game.getB2DWorld().step(delta, 2, 6);
 
-	public void toggleLighting() {
-		this.renderLights = !this.renderLights;
-	}
+        camera.position.set(em.getPlayer().getPosition(), 0);
+        camera.update();
 
-	public RayHandler getRayHandler() {
-		return rayHandler;
-	}
+        // Render
+        for (Room r : rm.getRooms())
+            r.getTiler().setView(camera);
+        shaper.setProjectionMatrix(camera.combined);
+        batch.setProjectionMatrix(camera.combined);
 
-	public Viewport getViewport() {
-		return viewport;
-	}
+        // Backgroud
+        rm.getActiveRoom().render(BG_LAYERS);
 
-	@Override
-	public void dispose() {
+        batch.begin();
+        em.getPlayer().draw(batch);
+        batch.end();
+
+        // Foreground
+        rm.getActiveRoom().render(FG_LAYERS);
+
+        // Lights and black space
+        rayHandler.render();
+        rm.getActiveRoom().render(BLACK_LAYER);
+
+        if (debugDraw)
+            b2drender.render(game.getB2DWorld(), camera.combined);
+
+
+    }
+
+    /** Must be called to notify a screen resize. */
+    public void resize(int w, int h) {
+        UIMatrix.setToOrtho2D(0, 0, w, h);
+        viewport.update(w, h, true);
+    }
+
+    public void setDebugDraw(boolean debugDraw) {
+        this.debugDraw = debugDraw;
+    }
+
+    public void toggleDebugDraw() {
+        this.debugDraw = !this.debugDraw;
+    }
+
+    public void toggleLighting() {
+        this.renderLights = !this.renderLights;
+    }
+
+    public RayHandler getRayHandler() {
+        if (rayHandler == null)
+            throw new Error("RayHandler is null");
+        return rayHandler;
+    }
+
+    public Viewport getViewport() {
+        if (rayHandler == null)
+            throw new Error("Viewport is null");
+        return viewport;
+    }
+
+    @Override
+    public void dispose() {
         // Dispose of all rendering resources
-		batch.dispose();
-		shaper.dispose();
-		rayHandler.dispose();
-	}
+        batch.dispose();
+        shaper.dispose();
+        rayHandler.dispose();
+    }
 
     public boolean isDebugDraw() {
         return debugDraw;
@@ -94,6 +146,6 @@ public class RenderManager implements Disposable{
     }
 
     public SpriteBatch getBatch() {
-		return batch;
-	}
+        return batch;
+    }
 }

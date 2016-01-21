@@ -46,6 +46,7 @@ public class RPGTestGame extends Game {
 		// Setup Box2D
 		this.multiContactListener = new MultiContactListener();
 		multiContactListener.addContactListener(new PlayerContactListener(B2DWorld, entityManager.getPlayer()));
+        B2DWorld.setContactListener(multiContactListener);
 
 		// Setup Input
 		inputMultiplexer = new InputMultiplexer();
@@ -63,7 +64,6 @@ public class RPGTestGame extends Game {
 	@Override
 	public void resize(int w, int h) {
 		super.resize(w, h);
-		this.renderManager.resize(w, h);
 	}
 
 	@Override
@@ -74,7 +74,6 @@ public class RPGTestGame extends Game {
 		entityManager.dispose();
 		roomManager.dispose();
 		renderManager.dispose();
-
 		assetsManager.getManager().dispose();
 	}
 

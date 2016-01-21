@@ -71,11 +71,12 @@ public class Entity {
 
 		body = world.createBody(bDef);
 
-		// Collision Sensor
+		// Physics body
 		FixtureDef fDef = new FixtureDef();
 		fDef.shape = new PolygonShape();
 		((PolygonShape)fDef.shape).setAsBox(actorWidth / 2f, actorHeight / 2f, new Vector2(0, 0), 0);
 		fDef.friction = 0f;
+        fDef.restitution = 0;
 
 		// Create body and assign userdata to owner
 		collision = body.createFixture(fDef);
@@ -147,6 +148,8 @@ public class Entity {
 
 	/** Move in a direction. Where direction is an int in range 0-3. */
 	public void move(int direction) {
+        System.out.println("player moved "+direction+" "+speed);
+
 		float rad = (direction / 2f) * MathUtils.PI;
 
         // Get current velocity, and use it to modify, not set, the new velocity
@@ -155,6 +158,21 @@ public class Entity {
 		body.setLinearVelocity(tmp.x + MathUtils.cos(rad) * speed, tmp.y + MathUtils.sin(rad) * speed);
 		body.setTransform(body.getPosition(), rad);
 	}
+
+    /** Stop the player moving in the given direction */
+    public void stop(int direction){
+        tmp.set(body.getLinearVelocity());
+        switch (direction){
+            case Entity.UP:
+            case Entity.DOWN:
+                body.setLinearVelocity(tmp.x, 0);
+                break;
+            case Entity.LEFT:
+            case Entity.RIGHT:
+                body.setLinearVelocity(0, tmp.y);
+                break;
+        }
+    }
 
 	public void stop() {
 		this.body.setLinearVelocity(0, 0);

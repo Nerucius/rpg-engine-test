@@ -37,14 +37,14 @@ public class Act1Screen implements Screen {
 	public void render(float delta) {
 		Gdx.graphics.setTitle("FPS: " + Gdx.graphics.getFramesPerSecond());
 
-		for (Room r : game.getRoomManager().getRooms()){
-            r.render(0,1,2,3,4,5,6,7,8,9);
-        }
+        game.getRenderManager().render(delta);
 	}
 
 	@Override
 	public void resize(int width, int height) {
 		Gdx.app.log("ACT1", "Resize " + width + ", " + height);
+
+        game.getRenderManager().resize(width, height);
 	}
 
 	@Override
